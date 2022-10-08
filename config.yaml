@@ -1,0 +1,22 @@
+# 整理后保存目录
+baseSavePath: D:\整理测试
+# 文件搜索目录
+fileSearchPath: [D:\downLoad,D:\downLoad]
+# excel文件所在目录
+excelReadPath: D:\test(1).xlsx
+# excel 读取的sheet名称
+excelReadSheetName: Sheet1
+# 类别
+categoryRow: E
+# excel开始读取的行数
+excelReadStartRow: 1
+# 公司名称所在列
+companyNameRow: F
+# 合同号所在列
+contractRow: G
+# 搜索条件所在列
+row: [D,G]
+# 搜索之后保存的文件夹名称
+name: [合同,凭证]
+
+
