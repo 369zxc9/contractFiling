@@ -111,11 +111,12 @@ func main() {
 		for index, saveDirName := range name {
 			savePath := contractSavePath + saveDirName
 
-			fmt.Println("搜索的文件名：", searchSave[index])
 			rowValue, err := openFile.GetCellValue(excelReadSheetName, row[index]+s)
-			fmt.Println(err)
+			if err != nil {
+				fmt.Println(err)
+			}
 			getFileByName := utils.GetFileByName(searchSave[index], rowValue)
-
+			fmt.Println("根据文件名查到的文件", getFileByName)
 			for _, file := range getFileByName {
 				err := utils.CopyDir(file, savePath)
 				fmt.Println(err)

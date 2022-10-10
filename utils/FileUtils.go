@@ -46,8 +46,6 @@ func GetAllFile(basePath string) []string {
 		if info.IsDir() {
 			file := GetAllFile(fullName)
 			result = append(result, file...)
-		} else {
-			result = append(result, fullName)
 		}
 	}
 	return result
@@ -56,8 +54,8 @@ func GetAllFile(basePath string) []string {
 func GetFileByName(files []string, name string) []string {
 	var result []string
 	for _, file := range files {
-		fmt.Println("根据[", name, "]，查找文件，匹配文件[", file, "]")
-		if strings.HasSuffix(file, name) {
+		//fmt.Println("根据[", name, "]，查找文件，匹配文件[", file, "]")
+		if strings.Contains(file, name) {
 			result = append(result, file)
 		}
 	}
@@ -89,6 +87,8 @@ func CopyDir(srcPath string, destPath string) error {
 			return nil
 		} else {
 			srcFile, err := os.Open(srcPath)
+			fmt.Println("复制的文件名", srcPath)
+			fmt.Println("组装之后的文件名", destPath+"\\"+srcFile.Name())
 			if err != nil {
 				return err
 			}
