@@ -55,9 +55,18 @@ func GetFileByName(files []string, name string) []string {
 	var result []string
 	for _, file := range files {
 		//fmt.Println("根据[", name, "]，查找文件，匹配文件[", file, "]")
-		if strings.Contains(file, name) {
-			result = append(result, file)
+
+		if strings.Contains(file, ".") {
+			// 说明是文件
+			if strings.Contains(file, "\\"+name+".") {
+				result = append(result, file)
+			}
+		} else {
+			if strings.HasSuffix(file, "\\"+name) {
+				result = append(result, file)
+			}
 		}
+
 	}
 	if len(result) == 0 {
 		fmt.Println("根据[", name, "]，查找文件，未能找到匹配文件")
@@ -70,11 +79,15 @@ func CopyDir(srcPath string, destPath string) error {
 	if stat, err := os.Stat(srcPath); err != nil {
 		return err
 	} else {
-		if stat.IsDir() {
+		if !strings.Contains(destPath, ".") {
 			err := os.MkdirAll(destPath, stat.Mode())
 			if err != nil {
-				return err
+				fmt.Println(err)
 			}
+		}
+
+		if stat.IsDir() {
+
 			files, err := ioutil.ReadDir(srcPath)
 			if err != nil {
 				return err
@@ -82,26 +95,46 @@ func CopyDir(srcPath string, destPath string) error {
 			for _, file := range files {
 				srcFilePath := srcPath + "\\" + file.Name()
 				destFilePath := destPath + "\\" + file.Name()
+
 				CopyDir(srcFilePath, destFilePath)
 			}
 			return nil
 		} else {
 			srcFile, err := os.Open(srcPath)
 			fmt.Println("复制的文件名", srcPath)
-			fmt.Println("组装之后的文件名", destPath+"\\"+srcFile.Name())
 			if err != nil {
-				return err
+				fmt.Println(err)
 			}
 			defer srcFile.Close()
-			destFile, err := os.Create(destPath)
+
+			split := strings.Split(srcPath, "\\")
+
+			s := split[len(split)-1]
+			fmt.Println("保存的文件名", destPath+"\\"+s)
+			destFile, err := os.OpenFile(destPath+"\\"+s, os.O_APPEND|os.O_CREATE, 0644)
 			if err != nil {
-				return err
+				fmt.Println("创建文件失败")
+				fmt.Println(err)
 			}
 			defer destFile.Close()
 			_, err = io.Copy(destFile, srcFile)
 			if err != nil {
-				return err
+				fmt.Println("拷贝文件失败")
+				fmt.Println(err)
 			}
+
+			//input, err := ioutil.ReadFile(srcPath)
+			//if err != nil {
+			//	fmt.Println(err)
+			//}
+			//split := strings.Split(srcPath, "\\")
+			//
+			//s := split[len(split)-1]
+			//err = ioutil.WriteFile(destPath + "\\" + s, input, 0644)
+			//if err != nil {
+			//	fmt.Println("Error creating", destPath + "\\" + s)
+			//	fmt.Println(err)
+			//}
 			return nil
 		}
 	}
